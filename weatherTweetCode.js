@@ -1,28 +1,33 @@
 //weather and its forcast tweet using Artik cloud and Raspberry Pi
-var GPIO = require('onoff').Gpio,
-    red = new GPIO(17,'out'),
-    green = new GPIO(27,'out'),
-    blue = new GPIO(22,'out');
-
-red.writeSync(1);
-green.writeSync(0);
-blue.writeSync(0);
 
 //related to artik cloud
 var webSocketUrl = "wss://api.artik.cloud/v1.1/websocket?ack=true";
-var device_id_temp = "e81aecba0ce742e0a1617789b1c4c26d"; //replace with your corresponding device id ; id for current temperature
-var device_token_temp = "5d0afaaeec9343919767d82be7c7394a";   // current temperature token
-var device_id_wd = "3e685c29a1dd48029ab63dc10a9ecd9f";		//id for rainPredictData
-var device_token_wd = "3ea20a26b1bf412f8062c824db1b1391";	//token for rainPredictData
+var device_id_temp = "e831---------youid--------276d"; //replace with your corresponding device id ; id for current temperature
+var device_token_temp = "5d-----------------b39c4a";   // current temperature token
+var device_id_wd = "34e------------------------cdh9f";		//id for rainPredictData
+var device_token_wd = "3e2a---------------------b1391";	//token for rainPredictData
 
 var isWebSocketReady = false;
 var ws = null;
 
 var WebSocket = require('ws');
 
+//Led indicator setup remove below comment if you want to use RGB led /*** ----to--- ***/
+/***
+var GPIO = require('onoff').Gpio,
+    red = new GPIO(17,'out'),
+    green = new GPIO(27,'out'),
+    blue = new GPIO(22,'out');
+
+//here I have used common anode RGB led, so to on corresponding led make it 0
+red.writeSync(1);
+green.writeSync(0);
+blue.writeSync(0);
+***/
+
 //related to weather api
 var WunderApi = require("wunderground-api-client").WunderApi;
-var combined = new WunderApi('64d739adacbfa4fe', null, 'conditions', 'forecast'); //replace with your wounderground API key
+var combined = new WunderApi('6s4------yourid--------48fe', null, 'conditions', 'forecast'); //replace with your wounderground API key
 var Temp = 0;
 var predict = false;
 
@@ -67,7 +72,8 @@ function register(){
     console.log("Registering device on the websocket connection");
     try{
         var registerMessage = '{"type":"register", "sdid":"'+device_id_temp+'", "Authorization":"bearer '+device_token_temp+'", "cid":"'+getTimeMillis()+'"}';
-        //console.log('Sending register message ' + registerMessage + '\n');
+        //uncomment below line if you want to view regisration of your device to artik cloud 
+	//console.log('Sending register message ' + registerMessage + '\n');
         ws.send(registerMessage, {mask: true});
 
 		registerMessage = '{"type":"register", "sdid":"'+device_id_wd+'", "Authorization":"bearer '+device_token_wd+'", "cid":"'+getTimeMillis()+'"}';
@@ -98,7 +104,8 @@ function sendData(){
 
         ts = ', "ts": '+getTimeMillis();
         var payload = '{"sdid":"'+device_id_temp+'"'+ts+', "data": '+JSON.stringify(uploadVal.currenttempData)+', "cid":"'+getTimeMillis()+'"}';
-        //console.log('Sending payload ' + payload);
+        //uncomment below line to view payload of your data
+	//console.log('Sending payload ' + payload);
         ws.send(payload, {mask: true});
 
 		ts = ', "ts": '+getTimeMillis();
@@ -141,6 +148,16 @@ setInterval(function(){
 		  console.log("Tom weather: "+tomforcast);
 		  rainPredictFunction(tomRelHumidity);
 		  console.log(predict);
+		  
+		  //remove below comment if you are using RGB led /*** ----to--- ***/
+		  /***
+		  if(predict){
+	            //blue led on to indicate chane of rain
+		    red.writeSync(1);
+		    green.writeSync(1);
+                    blue.writeSync(0);     
+		  }
+		  ***/
 		  //console.log(jsondata);
 
 		  })
