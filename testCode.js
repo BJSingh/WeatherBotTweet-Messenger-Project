@@ -33,7 +33,7 @@ var predict = false;
 
 //to predict chance of rain happening
 function rainPredictFunction(relHum) {
-	if (relHum > 85) {
+	if (relHum > 95) {
 		predict = true;
 	}
 	else predict = false;
