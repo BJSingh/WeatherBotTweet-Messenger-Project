@@ -26,9 +26,7 @@ combined.query('India/Bhiwandi') //replace with your country/city
 	  console.log("Tom DayT: "+dayTemp);
 	  console.log("Tom NightT: "+nightTemp);
 	  console.log("Tom relHumidity: "+tomRelHumidity);
-	  console.log("Tom weather: "+tomforcast);
-	  
-	  
+	  console.log("Tom weather: "+tomforcast);  
 	  
 	  })
   .fail(function (err) {console.dir(err)})
