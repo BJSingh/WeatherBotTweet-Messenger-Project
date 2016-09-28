@@ -1,9 +1,7 @@
 var WunderApi = require("wunderground-api-client").WunderApi;
 var combined = new WunderApi('64----yourkey---fe', null, 'conditions', 'forecast');//replace with your wounderground API key
-
-setInterval(function(){
 	
-combined.query('India/Bhiwandi')
+combined.query('India/Bhiwandi') //replace with your country/city 
   .then(function (result) {
 	  //uncomment console log to view complete result in console window if you want
 	  //console.log(result);
@@ -36,4 +34,3 @@ combined.query('India/Bhiwandi')
   .fail(function (err) {console.dir(err)})
   .done();
   
-},5000);
