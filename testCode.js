@@ -1,10 +1,10 @@
 //weather and its forcast tweet using Artik cloud and Raspberry Pi
 
-//related to artik cloud
+//related to artik cloud, utilizing socket connection to send data on artik cloud
 var webSocketUrl = "wss://api.artik.cloud/v1.1/websocket?ack=true";
 var device_id_temp = "e831---------youid--------276d"; //replace with your corresponding device id ; id for current temperature
 var device_token_temp = "5d-----------------b39c4a";   // current temperature token
-var device_id_wd = "34e------------------------cdh9f";		//id for rainPredictData
+var device_id_wd = "34e------------------------cdh9f"; //id for rainPredictData
 var device_token_wd = "3e2a---------------------b1391";	//token for rainPredictData
 
 var isWebSocketReady = false;
@@ -12,7 +12,8 @@ var ws = null;
 
 var WebSocket = require('ws');
 
-//Led indicator setup remove below comment if you want to use RGB led /*** ----to--- ***/
+//related to Led indicator setup
+//remove below comment if you want to use RGB led /*** ----to--- ***/
 /***
 var GPIO = require('onoff').Gpio,
     red = new GPIO(17,'out'),
@@ -28,8 +29,8 @@ blue.writeSync(0);
 //related to weather api
 var WunderApi = require("wunderground-api-client").WunderApi;
 var combined = new WunderApi('6s4------yourid--------48fe', null, 'conditions', 'forecast'); //replace with your wounderground API key
-var Temp = 0;
-var predict = false;
+var Temp = 0;			//variable to store today's temperature value of city
+var predict = false;		//variable to store tomorrow's prediction status of rain in city
 
 //to predict chance of rain happening
 function rainPredictFunction(relHum) {
@@ -73,7 +74,7 @@ function register(){
     try{
         var registerMessage = '{"type":"register", "sdid":"'+device_id_temp+'", "Authorization":"bearer '+device_token_temp+'", "cid":"'+getTimeMillis()+'"}';
         //uncomment below line if you want to view regisration of your device to artik cloud 
-	    //console.log('Sending register message ' + registerMessage + '\n');
+	//console.log('Sending register message ' + registerMessage + '\n');
         ws.send(registerMessage, {mask: true});
 
 		registerMessage = '{"type":"register", "sdid":"'+device_id_wd+'", "Authorization":"bearer '+device_token_wd+'", "cid":"'+getTimeMillis()+'"}';
@@ -88,17 +89,17 @@ function register(){
 }
 
 /**
- * Send one message to ARTIK Cloud
+ * function to send weather data as a message to ARTIK Cloud
  */
 function sendData(){
     try{
 
 		var uploadVal = {
 			 currenttempData : {
-				"currentTempVal": Temp
+				"currentTempVal": Temp	     //currentTempVal defined as per field name during device type creation(todayTempDevice) on artik developer
 			},
 			 rainPredictData : {
-				"rainPredictStatus": predict
+				"rainPredictStatus": predict  //similarly rainPredictStatus defined as per field name for rainPredictDevice on artik developer
 			}
 		}
 
@@ -170,6 +171,6 @@ setInterval(function(){
 		return;
 	}
 
-	sendData();
+	sendData(); //function
 
 },5000);
